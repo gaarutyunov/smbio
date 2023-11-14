@@ -22,7 +22,7 @@ jobs:
         uses: packetcoders/action-setup-cache-python-poetry@main
         with:
           python-version: 3.10
-          poetry-version: 1.7
+          poetry-version: 1.7.0
       - name: Run tests
         run: |
           poetry run pytest
