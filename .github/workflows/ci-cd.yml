@@ -1,0 +1,36 @@
+name: CI/CD
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/smbio
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+      - name: "Setup Python, Poetry and Dependencies"
+        uses: packetcoders/action-setup-cache-python-poetry@main
+        with:
+          python-version: 3.12
+          poetry-version: 1.7
+      - name: Run tests
+        run: |
+          poetry run pytest
+      - name: Build
+        run: |
+          poetry build
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+      - uses: ncipollo/release-action@v1
